@@ -8,7 +8,7 @@ import {sessionStorageGetItem} from 'react-devtools-shared/src/storage';
 function injectCode(code) {
   const script = document.createElement('script');
   script.textContent = code;
-
+  console.log("do I get here");
   // This script runs before the <head> element is created,
   // so we add the script to <html> instead.
   nullthrows(document.documentElement).appendChild(script);
@@ -112,6 +112,7 @@ window.__REACT_DEVTOOLS_GLOBAL_HOOK__.nativeSet = Set;
 `;
 
 // If we have just reloaded to profile, we need to inject the renderer interface before the app loads.
+console.log("before");
 if (sessionStorageGetItem(SESSION_STORAGE_RELOAD_AND_PROFILE_KEY) === 'true') {
   const rendererURL = chrome.runtime.getURL('build/renderer.js');
   let rendererCode;
@@ -121,13 +122,17 @@ if (sessionStorageGetItem(SESSION_STORAGE_RELOAD_AND_PROFILE_KEY) === 'true') {
   // and synchronously inject it into the page.
   // There are very few ways to actually do this.
   // This seems to be the best approach.
-  const request = new XMLHttpRequest();
-  request.addEventListener('load', function() {
-    rendererCode = this.responseText;
-  });
-  request.open('GET', rendererURL, false);
-  request.send();
-  injectCode(rendererCode);
+  // const request = new XMLHttpRequest();
+  // request.addEventListener('load', function() {
+  //   rendererCode = this.responseText;
+  // });
+  // request.open('GET', rendererURL, false);
+  // request.send();
+  // injectCode(rendererCode);
+  console.log("in ");
+  fetch(rendererURL)
+    .then((res) => res.text())
+    .then((text) => injectCode(text))
 }
 
 // Inject a __REACT_DEVTOOLS_GLOBAL_HOOK__ global for React to interact with.
@@ -135,6 +140,9 @@ if (sessionStorageGetItem(SESSION_STORAGE_RELOAD_AND_PROFILE_KEY) === 'true') {
 // We need to inject this code because content scripts (ie injectGlobalHook.js) don't have access
 // to the webpage's window, so in order to access front end settings
 // and communicate with React, we must inject this code into the webpage
+console.log("whole command is " + 
+saveNativeValues +
+detectReact,)
 switch (document.contentType) {
   case 'text/html':
   case 'application/xhtml+xml': {
@@ -145,7 +153,7 @@ switch (document.contentType) {
         saveNativeValues +
         detectReact,
     );
-    break;
+    break; 
   }
 }
 

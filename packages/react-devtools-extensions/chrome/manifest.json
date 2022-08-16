@@ -1,5 +1,6 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
+  "permissions": ["scripting"],
   "name": "React Developer Tools",
   "description": "Adds React debugging tools to the Chrome Developer Tools.",
   "version": "4.25.0",
@@ -11,7 +12,7 @@
     "48": "icons/48-production.png",
     "128": "icons/128-production.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "icons/16-disabled.png",
       "32": "icons/32-disabled.png",
@@ -21,20 +22,23 @@
     "default_popup": "popups/disabled.html"
   },
   "devtools_page": "main.html",
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": [
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [{
+    "resources": [
     "main.html",
     "panel.html",
     "build/react_devtools_backend.js",
     "build/renderer.js"
   ],
+    "matches": [],
+    "extension_ids": []
+  }],
   "background": {
-    "scripts": [
-      "build/background.js"
-    ],
-    "persistent": false
+    "service_worker": "build/background.js"
   },
-  "permissions": [
+  "optional_host_permissions": [
     "file:///*",
     "http://*/*",
     "https://*/*"
