@@ -36,13 +36,12 @@ function isNumeric(str: string): boolean {
 }
 
 function installContentScript(tabId: number) {
-  chrome.tabs.executeScript(
-    tabId,
-    {file: '/build/contentScript.js'},
+  chrome.scripting.executeScript({
+    target: {tabId: tabId},
+    files: ['/build/contentScript.js'],
     function() {},
-  );
+});
 }
-
 function doublePipe(one, two) {
   one.onMessage.addListener(lOne);
   function lOne(message) {
@@ -63,7 +62,7 @@ function doublePipe(one, two) {
 }
 
 function setIconAndPopup(reactBuildType, tabId) {
-  chrome.browserAction.setIcon({
+  chrome.action.setIcon({
     tabId: tabId,
     path: {
       '16': 'icons/16-' + reactBuildType + '.png',
@@ -72,7 +71,7 @@ function setIconAndPopup(reactBuildType, tabId) {
       '128': 'icons/128-' + reactBuildType + '.png',
     },
   });
-  chrome.browserAction.setPopup({
+  chrome.action.setPopup({
     tabId: tabId,
     popup: 'popups/' + reactBuildType + '.html',
   });
